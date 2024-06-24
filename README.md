@@ -69,7 +69,7 @@ To collect raw EEG data using the Neurosity headset, run the `collector_trial.py
 python collector_trial.py
 ```
 
-This will save the collected data in the `files/unfiltered/` directory.
+You will need to ensure your headset is on and streaming before running this. You also need to define the name of the JSON file you wish to store the resultant data in along with the time duration you want to record. This will save the collected data in the `files/unfiltered/` directory.
 
 ### Preprocessing
 
