@@ -116,12 +116,14 @@ This script combines the extracted features, splits the data into training and t
 The configuration parameters are defined in `config/settings.py`:
 
 - **Neurosity Credentials**:
+  ```sh
   NEUROSITY_DEVICE_ID = os.getenv("NEUROSITY_DEVICE_ID")
   NEUROSITY_EMAIL = os.getenv("NEUROSITY_EMAIL")
   NEUROSITY_PASSWORD = os.getenv("NEUROSITY_PASSWORD")
   ```
 
 - **Windowing Parameters**:
+  ```sh
   WINDOW_LEN = 1
   OVERLAP = 0.5
   EPOCH_TIME = 0.0625
@@ -130,6 +132,7 @@ The configuration parameters are defined in `config/settings.py`:
   ```
 
 - **Electrode Configuration**:
+  ```sh
   channel_position_config = {
       'CP3': 0,
       'C3': 1,
@@ -154,6 +157,7 @@ The configuration parameters are defined in `config/settings.py`:
   ```
 
 - **Preprocessing Configuration**:
+  ```sh
   preprocessing_config = {
       'bandpass': True,
       'notch': True,
@@ -165,6 +169,7 @@ The configuration parameters are defined in `config/settings.py`:
   ```
 
 - **Feature Extraction Configuration**:
+  ```sh
   feature_config = {
       "psd": True,
       "band_powers": True,
@@ -180,12 +185,4 @@ The configuration parameters are defined in `config/settings.py`:
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements or bug fixes.
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
-
----
-
-This README.md provides a comprehensive overview of the project, including its structure, installation instructions, usage details, configuration options, and guidelines for contributing. Adjust the content as necessary to match your project's specifics.
+Please feel free to fork and use this code for your own EEG-ML projects! Here is a link to Neurosity's homepage: https://neurosity.co
