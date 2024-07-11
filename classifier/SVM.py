@@ -24,7 +24,7 @@ y = np.hstack((labels_freestyle, labels_silent))
 print("Shape of feature matrix X:", X.shape)  # Should be (number of samples, number of features)
 
 # Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
 
 # Train the SVM classifier
 svm_clf = SVC(kernel='linear')
