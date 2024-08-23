@@ -3,7 +3,7 @@ from scipy.linalg import solve_toeplitz
 from scipy.signal import welch
 
 from emg.data_ingestion.config import ELECTRODE_CONFIG, SAMPLING_FREQ, WINDOW_LEN, OVERLAP, FEATURE_CONFIG
-from emg.data_ingestion.data_loader import apply_window_csv, preprocess_data, preprocess_data_v2
+from emg.data_ingestion.data_loader import apply_window_csv, preprocess_data
 
 def mean_absolute_value(emg_data):
     return np.mean(np.abs(emg_data), axis=1)

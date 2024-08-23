@@ -1,3 +1,6 @@
+import os
+import joblib
+import warnings
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from sklearn.model_selection import train_test_split, GridSearchCV, ParameterGrid
 
@@ -6,6 +9,8 @@ from emg.feature_extraction.feature_extractor import extract_features_from_files
 import emg.models.model_suite as model_suite
 from emg.models.model_suite import get_model
 
+warnings.filterwarnings("ignore")
+
 
 class Optimiser:
     def __init__(self, model_suite):
@@ -13,9 +18,15 @@ class Optimiser:
         self.best_model = None
         self.best_params = None
         self.best_score = 0
+        self.best_models = {}
 
     @staticmethod
-    def optimise_single_model(model_name, param_grid, X, y):
+    def save_model(model, model_name, save_dir='saved_models'):
+        os.makedirs(save_dir, exist_ok=True)
+        model_path = os.path.join(save_dir, f"{model_name}_best_model.pkl")
+        joblib.dump(model, model_path)
+
+    def optimise_single_model(self, model_name, param_grid, X, y):
         model = get_model(model_name)
         grid_search = GridSearchCV(model, param_grid, cv=5, scoring='accuracy')
         grid_search.fit(X, y)
@@ -24,9 +35,35 @@ class Optimiser:
         best_params = grid_search.best_params_
         best_score = grid_search.best_score_
 
+        self.save_model(best_model, model_name)
+
         return best_model, best_params, best_score
 
-    def optimise_multiple_models(self, model_configs, X, y):
+    def optimise_multiple_models_model_lvl(self, model_configs, X, y):
+        results = []
+
+        for model_name, param_grid in model_configs.items():
+            print(f"Optimising model: {model_name}...")
+            best_model, best_params, best_score = self.optimise_single_model(model_name, param_grid, X, y)
+
+            # Print the best model, params, and score for the current model
+            print("\n\nBest Model: ", best_model)
+            print("Best Params: ", best_params)
+            print("Best Score: ", best_score)
+
+            # Append results to the list
+            results.append((model_name, best_model, best_params, best_score))
+            self.best_models[model_name] = best_model
+
+            # Update the overall best model if the current model's score is higher
+            if best_score > self.best_score:
+                self.best_model = best_model
+                self.best_params = best_params
+                self.best_score = best_score
+
+        return results
+
+    def optimise_multiple_models_param_lvl(self, model_configs, X, y):
         results = []
 
         # Splitting the dataset for training and evaluation
@@ -61,7 +98,7 @@ class Optimiser:
         return results
 
     def run_optimisation(self, config, X, y):
-        results = self.optimise_multiple_models(config['model_configs'], X, y)
+        results = self.optimise_multiple_models_model_lvl(config['model_configs'], X, y)
         return {
             "best_model": self.best_model,
             "best_params": self.best_params,
@@ -122,7 +159,6 @@ if __name__ == "__main__":
         "model_configs": {
             "SVM": {"C": [0.1, 1, 10], "kernel": ["linear", "rbf"]},
             "RandomForest": {"n_estimators": [50, 100, 200], "max_depth": [None, 10, 20]},
-            "KNN": {"n_neighbors": [3, 5, 7], "weights": ["uniform", "distance"]},
             "ANN": {"hidden_layer_sizes": [(50,), (100,), (50, 50)], "activation": ["relu", "tanh"]},
             "LogisticRegression": {"C": [0.1, 1, 10], "solver": ["lbfgs", "liblinear"]},
             "NaiveBayes": {"var_smoothing": [1e-9, 1e-8, 1e-7]}
