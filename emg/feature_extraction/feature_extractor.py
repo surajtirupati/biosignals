@@ -104,10 +104,10 @@ def extract_features_from_file(filepath):
     full_features = [extract_features_multi_channel(sample_channels, SAMPLING_FREQ, FEATURE_CONFIG) for sample_channels in emg_data]
     return full_features
 
-def extract_features_from_files(file_list):
+def extract_features_from_files(file_list, file_loc='../data'):
     all_features = []
     for file in file_list:
-        file_path = f'../data/{file}'
+        file_path = f'{file_loc}/{file}'
         features = extract_features_from_file(file_path)
         all_features.extend(features)
 
@@ -115,8 +115,12 @@ def extract_features_from_files(file_list):
 
 
 if __name__ == '__main__':
-    files = ['fist_3min_21_22_24.csv']
+    palm_files = ['palm_3min_21_27_11.csv']
+    fist_files = ['fist_3min_21_22_24.csv']
+    finger_files = ['f_you_21_35_48.csv']
 
-    fist_features = extract_features_from_files(files)
+    palm_features = extract_features_from_files(palm_files)
+    fist_features = extract_features_from_files(fist_files)
+    finger_features = extract_features_from_files(finger_files)
 
     print()
