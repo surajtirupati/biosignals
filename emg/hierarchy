@@ -1,0 +1,41 @@
+emg_classifier/
+│
+├── data_ingestion/
+│   ├── __init__.py
+│   ├── data_loader.py
+│   ├── data_preprocessor.py
+│   └── data_validator.py
+│
+├── feature_extraction/
+│   ├── __init__.py
+│   ├── feature_calculator.py
+│   ├── feature_selection.py
+│   └── feature_reporter.py
+│
+├── models/
+│   ├── __init__.py
+│   ├── svm_model.py
+│   ├── ann_model.py
+│   ├── logistic_regression_model.py
+│   └── model_selector.py
+│
+├── training/
+│   ├── __init__.py
+│   ├── trainer.py
+│   ├── accuracy_reporter.py
+│   └── training_config.py
+│
+├── optimisation/
+│   ├── __init__.py
+│   ├── hyperparameter_optimizer.py
+│   ├── model_comparator.py
+│   └── optimisation_reporter.py
+│
+├── utils/
+│   ├── __init__.py
+│   ├── config_loader.py
+│   ├── logger.py
+│   ├── data_visualizer.py
+│   └── file_manager.py
+│
+└── main.py
