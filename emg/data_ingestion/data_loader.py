@@ -4,26 +4,12 @@ import numpy as np
 from math import ceil
 
 from emg.data_ingestion.config import ELECTRODE_CONFIG
+from emg.data_ingestion.preprocessing import log_transform_data
 
 
-def preprocess_data(channel_data, window_size=100):
-    # RMS Envelope
-    squared_signal = np.square(channel_data)
-    window = np.ones(window_size) / float(window_size)
-    rms_envelope = np.sqrt(np.convolve(squared_signal, window, 'same'))
-
-    # Peak Dynamic Normalization
-    peak_value = np.max(rms_envelope)
-    if peak_value != 0:
-        normalized_signal = rms_envelope / peak_value
-    else:
-        normalized_signal = rms_envelope
-
-    # Ensure the values are between [0, 1]
-    normalized_signal = np.clip(normalized_signal, 0, 1)
-
-    return normalized_signal
-
+def preprocess_data(channel_data):
+    channel_data = log_transform_data(channel_data)
+    return channel_data
 
 def normalize(df):
     return (df - df.mean()) / df.std()  # Simple Z-score normalization
