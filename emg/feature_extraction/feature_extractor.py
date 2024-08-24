@@ -72,86 +72,37 @@ def spectral_entropy(emg_data, fs):
 
 ### Extracting Features from files using config
 def extract_features_multi_channel(emg_data_multi_channel, fs, config):
+    feature_functions = {
+        "mean_absolute_value (mav)": mean_absolute_value,
+        "root_mean_square (rms)": root_mean_square,
+        "zero_crossing (zc)": zero_crossing,
+        "slope_sign_changes (ssc)": slope_sign_changes,
+        "waveform_length (wl)": waveform_length,
+        "integrated_emg (iemg)": integrated_emg,
+        "autoregressive_coefficients (ar_coefficients)": autoregressive_coefficients,
+        "hjorth_parameters": hjorth_parameters,
+        "mean_frequency": lambda x: mean_frequency(x, fs),
+        "median_frequency": lambda x: median_frequency(x, fs),
+        "power_spectral_density (psd)": lambda x: power_spectral_density(x, fs).flatten(),
+        "spectral_entropy": lambda x: spectral_entropy(x, fs)
+    }
+
     features = []
     for channel_data in emg_data_multi_channel:
-
         channel_data = preprocess_data(channel_data)
         channel_data = channel_data.reshape(1, -1)
 
         if np.isnan(channel_data).any():
             print("NaN in channel data!")
 
-        if config.get("mav", False):
-            mav = mean_absolute_value(channel_data)
-            if np.isnan(mav).any():
-                print("NaN detected in MAV feature!")
-            features.extend(mav)
-
-        if config.get("rms", False):
-            rms = root_mean_square(channel_data)
-            if np.isnan(rms).any():
-                print("NaN detected in RMS feature!")
-            features.extend(rms)
-
-        if config.get("zc", False):
-            zc = zero_crossing(channel_data)
-            if np.isnan(zc).any():
-                print("NaN detected in ZC feature!")
-            features.extend(zc)
-
-        if config.get("ssc", False):
-            ssc = slope_sign_changes(channel_data)
-            if np.isnan(ssc).any():
-                print("NaN detected in SSC feature!")
-            features.extend(ssc)
-
-        if config.get("wl", False):
-            wl = waveform_length(channel_data)
-            if np.isnan(wl).any():
-                print("NaN detected in WL feature!")
-            features.extend(wl)
-
-        if config.get("iemg", False):
-            iemg = integrated_emg(channel_data)
-            if np.isnan(iemg).any():
-                print("NaN detected in IEMG feature!")
-            features.extend(iemg)
-
-        if config.get("ar_coefficients", False):
-            ar_coeffs = autoregressive_coefficients(channel_data)
-            if np.isnan(ar_coeffs).any():
-                print("NaN detected in AR Coefficients feature!")
-            features.extend(ar_coeffs)
-
-        if config.get("hjorth_parameters", False):
-            hjorth = hjorth_parameters(channel_data)
-            if np.isnan(hjorth).any():
-                print("NaN detected in Hjorth Parameters feature!")
-            features.extend(hjorth)
-
-        if config.get("mean_frequency", False):
-            mean_freq = mean_frequency(channel_data, fs)
-            if np.isnan(mean_freq).any():
-                print("NaN detected in Mean Frequency feature!")
-            features.extend(mean_freq)
-
-        if config.get("median_frequency", False):
-            median_freq = median_frequency(channel_data, fs)
-            if np.isnan(median_freq).any():
-                print("NaN detected in Median Frequency feature!")
-            features.extend(median_freq)
-
-        if config.get("psd", False):
-            psd = power_spectral_density(channel_data, fs).flatten()
-            if np.isnan(psd).any():
-                print("NaN detected in PSD feature!")
-            features.extend(psd)
-
-        if config.get("spectral_entropy", False):
-            spectral_entropy_val = spectral_entropy(channel_data, fs)
-            if np.isnan(spectral_entropy_val).any():
-                print("NaN detected in Spectral Entropy feature!")
-            features.extend(spectral_entropy_val)
+        for feature_name, is_enabled in config.items():
+            if is_enabled:
+                feature_function = feature_functions.get(feature_name)
+                if feature_function:
+                    feature_values = feature_function(channel_data)
+                    if np.isnan(feature_values).any():
+                        print(f"NaN detected in {feature_name} feature!")
+                    features.extend(feature_values)
 
     return np.array(features)
 

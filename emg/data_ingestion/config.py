@@ -14,17 +14,17 @@ WINDOW_LEN = 0.5
 OVERLAP = 0.5
 
 FEATURE_CONFIG = {
-    "mav": True,
-    "rms": True,
-    "zc": True,
-    "ssc": True,
-    "wl": True,
-    "iemg": True,
-    "ar_coefficients": False,
-    "hjorth_parameters": False,
-    "mean_frequency": True,
-    "median_frequency": True,
-    "psd": False,
-    "spectral_entropy": False
-}
+        "mean_absolute_value (mav)": False,
+        "root_mean_square (rms)": False,
+        "zero_crossing (zc)": False,
+        "slope_sign_changes (ssc)": True,
+        "waveform_length (wl)": False,
+        "integrated_emg (iemg)": False,
+        "autoregressive_coefficients (ar_coefficients)": False,
+        "hjorth_parameters": False,
+        "mean_frequency": False,
+        "median_frequency": False,
+        "power_spectral_density (psd)": False,
+        "spectral_entropy": False
+    }
 

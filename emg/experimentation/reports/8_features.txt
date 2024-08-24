@@ -1,0 +1,44 @@
+Feature Selection Report
+================================================================================
+
+Top Features Selected by Recursive Feature Elimination (RFE)
+--------------------------------------------------------------------------------
+1. CH1: mean_absolute_value (mav)
+2. CH1: root_mean_square (rms)
+3. CH1: integrated_emg (iemg)
+4. CH2: root_mean_square (rms)
+5. CH3: root_mean_square (rms)
+6. CH3: slope_sign_changes (ssc)
+7. CH3: waveform_length (wl)
+8. CH4: mean_absolute_value (mav)
+9. CH4: root_mean_square (rms)
+10. CH4: integrated_emg (iemg)
+
+Top Features Selected by Sequential Feature Selection (SFS)
+--------------------------------------------------------------------------------
+1. CH1: root_mean_square (rms)
+2. CH1: median_frequency
+3. CH3: root_mean_square (rms)
+4. CH3: zero_crossing (zc)
+5. CH3: slope_sign_changes (ssc)
+6. CH3: waveform_length (wl)
+7. CH4: mean_absolute_value (mav)
+8. CH5: root_mean_square (rms)
+9. CH7: root_mean_square (rms)
+10. CH8: mean_absolute_value (mav)
+
+Top Features Ranked by Permutation Importance
+--------------------------------------------------------------------------------
+1. CH3: waveform_length (wl) (Score: 0.0054)
+2. CH3: root_mean_square (rms) (Score: 0.0031)
+3. CH8: integrated_emg (iemg) (Score: 0.0029)
+4. CH4: root_mean_square (rms) (Score: 0.0027)
+5. CH3: integrated_emg (iemg) (Score: 0.0023)
+6. CH1: root_mean_square (rms) (Score: 0.0021)
+7. CH4: slope_sign_changes (ssc) (Score: 0.0019)
+8. CH1: mean_absolute_value (mav) (Score: 0.0017)
+9. CH1: integrated_emg (iemg) (Score: 0.0017)
+10. CH8: root_mean_square (rms) (Score: 0.0017)
+
+================================================================================
+End of Report
