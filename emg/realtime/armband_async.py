@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 from mindrove.board_shim import BoardShim, MindRoveInputParams, BoardIds
 
-from emg.data_ingestion.config import FEATURE_CONFIG, WINDOW_LEN
+from emg.data_ingestion.config import FEATURE_CONFIG, WINDOW_LEN, SAMPLING_FREQ
 from emg.models.model_inferencer import infer
 from emg.realtime.latency_test import latency_test
 from emg.feature_extraction.feature_extraction import extract_features_multi_channel
@@ -36,9 +36,9 @@ async def read_emg_data(board, sampling_rate, feature_config, model, window_size
 
         await asyncio.sleep(0.01)
 
-async def process_data(data, model, feature_config=FEATURE_CONFIG):
+async def process_data(data, model, feature_config=FEATURE_CONFIG, samp_freq=SAMPLING_FREQ):
     # Assuming data is in the format N_channels x N_samples
-    features = extract_features_multi_channel(data, fs=500, config=feature_config)  # 500 is an assumed sampling rate
+    features = extract_features_multi_channel(data, fs=samp_freq, config=feature_config)
     result = infer(model, features)
     print(f"Predicted gesture: {result}")
     await latency_test(data)
