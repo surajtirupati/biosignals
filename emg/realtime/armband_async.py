@@ -8,7 +8,6 @@ from emg.models.model_inferencer import infer
 from emg.realtime.latency_test import latency_test
 from emg.feature_extraction.feature_extraction import extract_features_multi_channel
 
-# Let’s get this board connected and ready for action
 def initialize_board():
     BoardShim.enable_dev_board_logger()  # Logging everything for debugging—don’t miss a thing
     params = MindRoveInputParams()
@@ -18,7 +17,6 @@ def initialize_board():
     board.start_stream()
     return board
 
-# Here’s where the magic happens—pulling in real-time data
 async def read_emg_data(board, sampling_rate, feature_config, model, window_size=WINDOW_LEN, chunk_duration=0.1):
     chunk_size = int(sampling_rate * chunk_duration)
     collected_data = []
@@ -38,7 +36,6 @@ async def read_emg_data(board, sampling_rate, feature_config, model, window_size
 
         await asyncio.sleep(0.01)
 
-# This is the placeholder where we’ll run our model
 async def process_data(data, model, feature_config=FEATURE_CONFIG):
     # Assuming data is in the format N_channels x N_samples
     features = extract_features_multi_channel(data, fs=500, config=feature_config)  # 500 is an assumed sampling rate
