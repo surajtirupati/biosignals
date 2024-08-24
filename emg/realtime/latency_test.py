@@ -1,4 +1,5 @@
 import time
+import asyncio
 import numpy as np
 from datetime import datetime
 from mindrove.board_shim import BoardShim, MindRoveInputParams, BoardIds
@@ -39,6 +40,25 @@ def main():
     finally:
         board.stop_stream()
         board.release_session()
+
+
+async def latency_test(data):
+    timestamp_channel = BoardShim.get_timestamp_channel(BoardIds.MINDROVE_WIFI_BOARD.value)
+    timestamps = data[timestamp_channel, :]
+
+    latencies = []
+    for ts in timestamps:
+        data_time = datetime.fromtimestamp(ts)
+        current_time = datetime.now()
+        latency = (current_time - data_time).total_seconds() * 1000  # Latency in milliseconds
+        latencies.append(latency)
+
+    # Optionally, you can process these latencies further or just print them
+    for latency in latencies:
+        print(f"Sample latency: {latency:.2f} ms")
+
+    await asyncio.sleep(0.1)  # Slight delay to simulate async processing
+
 
 
 if __name__ == "__main__":

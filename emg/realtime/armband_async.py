@@ -1,7 +1,12 @@
 import asyncio
-from datetime import datetime
+import pickle
 import numpy as np
 from mindrove.board_shim import BoardShim, MindRoveInputParams, BoardIds
+
+from emg.data_ingestion.config import FEATURE_CONFIG, WINDOW_LEN
+from emg.models.model_inferencer import infer
+from emg.realtime.latency_test import latency_test
+from emg.feature_extraction.feature_extraction import extract_features_multi_channel
 
 # Let’s get this board connected and ready for action
 def initialize_board():
@@ -14,8 +19,8 @@ def initialize_board():
     return board
 
 # Here’s where the magic happens—pulling in real-time data
-async def read_emg_data(board, sampling_rate, window_size=2, chunk_duration=0.1):
-    chunk_size = int(sampling_rate * chunk_duration)  # Calculate the chunk size based on the chunk duration
+async def read_emg_data(board, sampling_rate, feature_config, model, window_size=WINDOW_LEN, chunk_duration=0.1):
+    chunk_size = int(sampling_rate * chunk_duration)
     collected_data = []
 
     while True:
@@ -28,40 +33,30 @@ async def read_emg_data(board, sampling_rate, window_size=2, chunk_duration=0.1)
                 emg_channels = BoardShim.get_emg_channels(board.board_id)
                 emg_data = np.hstack(collected_data)  # Combine the chunks
                 collected_data = []  # Reset for the next batch
-                await process_data(emg_data)
 
-        await asyncio.sleep(0.01)  # Check more frequently to reduce latency
+                await process_data(emg_data, model, feature_config)
+
+        await asyncio.sleep(0.01)
 
 # This is the placeholder where we’ll run our model
-async def process_data(data):
-    # Drop your model’s prediction code here
-    # Something like: result = your_model.predict(data)
+async def process_data(data, model, feature_config=FEATURE_CONFIG):
+    # Assuming data is in the format N_channels x N_samples
+    features = extract_features_multi_channel(data, fs=500, config=feature_config)  # 500 is an assumed sampling rate
+    result = infer(model, features)
+    print(f"Predicted gesture: {result}")
     await latency_test(data)
-    print(f"Got a fresh batch of data: {data.shape}. Data:\n{data[0:10]}")
-    await asyncio.sleep(0.5)  # Simulate some thinking time
 
-async def latency_test(data):
-    timestamp_channel = BoardShim.get_timestamp_channel(BoardIds.MINDROVE_WIFI_BOARD.value)
-    timestamps = data[timestamp_channel, :]
 
-    latencies = []
-    for ts in timestamps:
-        data_time = datetime.fromtimestamp(ts)
-        current_time = datetime.now()
-        latency = (current_time - data_time).total_seconds() * 1000  # Latency in milliseconds
-        latencies.append(latency)
-
-    # Optionally, you can process these latencies further or just print them
-    for latency in latencies:
-        print(f"Sample latency: {latency:.2f} ms")
-
-    await asyncio.sleep(0.1)  # Slight delay to simulate async processing
-
-async def main():
+async def main(model_path, feature_config=FEATURE_CONFIG, window_size=WINDOW_LEN):
     board = initialize_board()
     sampling_rate = BoardShim.get_sampling_rate(BoardIds.MINDROVE_WIFI_BOARD.value)
+
+    # Load the model from the .pkl file
+    with open(model_path, 'rb') as file:
+        model = pickle.load(file)
+
     try:
-        await read_emg_data(board, sampling_rate)
+        await read_emg_data(board, sampling_rate, feature_config, model, window_size)
     except KeyboardInterrupt:
         print("Okay, let’s wrap it up.")
     finally:
@@ -70,4 +65,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    path_to_model = '../experimentation/saved_models/just_rms_500ms/just_rms_LogisticRegression_best_model.pkl'
+    asyncio.run(main(model_path=path_to_model))
