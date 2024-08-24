@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 from emg.data_ingestion.config import FEATURE_CONFIG
-from emg.feature_extraction.feature_extractor import extract_features_from_files, prepare_data_for_training
+from emg.feature_extraction.feature_extraction import extract_features_from_files, prepare_data_for_training
 
 warnings.filterwarnings("ignore")
 

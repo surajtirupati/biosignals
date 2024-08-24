@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score, f1_score, classification_report
 from sklearn.model_selection import train_test_split, GridSearchCV, ParameterGrid
 
 from emg.data_ingestion.config import FEATURE_CONFIG
-from emg.feature_extraction.feature_extractor import extract_features_from_files, prepare_data_for_training
+from emg.feature_extraction.feature_extraction import extract_features_from_files, prepare_data_for_training
 import emg.models.model_suite as model_suite
 from emg.models.model_suite import get_model
 

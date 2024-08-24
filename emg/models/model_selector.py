@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 
-from emg.feature_extraction.feature_extractor import extract_features_from_files, prepare_data_for_training
+from emg.feature_extraction.feature_extraction import extract_features_from_files, prepare_data_for_training
 from emg.models.model_suite import get_model
 
 def train_and_evaluate_model(file_lists, labels, model_name, custom_params=None, test_size=0.1):
